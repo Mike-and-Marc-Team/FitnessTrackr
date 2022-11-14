@@ -2,6 +2,7 @@
 
 const express = require('express');
 const { client } = require('./db/index')
+require('dotenv').config
 // setting up this express shit
 const app = express();
 
