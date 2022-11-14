@@ -52,8 +52,8 @@ async function getUserByUsername(userName){
         SELECT *
         FROM users
         WHERE username=$1;
-        `, [username])
-        
+        `, [userName])
+        return user
     } catch (error) {
         console.log(error)
     }
