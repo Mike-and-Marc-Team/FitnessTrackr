@@ -62,7 +62,6 @@ async function getUserByUsername(userName){
 
 
 module.exports = {
-    client,
     createUser,
     getUserById,
     getUser,
