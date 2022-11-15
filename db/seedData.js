@@ -9,12 +9,15 @@ const {
 const {
     createActivity
 } = require('./activities')
+
 async function dropTables() {
     try {
         console.log("Dropping tables...")
         await client.query(`
-        DROP TABLE IF EXISTS users;
+        DROP TABLE IF EXISTS routineactivities;
+        DROP TABLE IF EXISTS routines;
         DROP TABLE IF EXISTS activities;
+        DROP TABLE IF EXISTS users;
         `);
         console.log("Finished dropping tables!")
     } catch (error) {
@@ -35,6 +38,20 @@ async function createTables() {
             id SERIAL PRIMARY KEY,
             name VARCHAR(255) UNIQUE NOT NULL,
             description TEXT NOT NULL
+        );
+        CREATE TABLE routines(
+            id SERIAL PRIMARY KEY,
+            "creatorId" INTEGER REFERENCES users (id),
+            "isPublic" BOOLEAN DEFAULT false,
+            name VARCHAR(255) UNIQUE NOT NULL,
+            goal TEXT NOT NULL
+        );
+        CREATE TABLE routineactivities(
+            id SERIAL PRIMARY KEY,
+            "routineId" INTEGER REFERENCES routines (id),
+            "activityId" INTEGER REFERENCES activities (id),
+            duration INTEGER,
+            count INTEGER
         );
         `);
         console.log("Finished creating tables!")
