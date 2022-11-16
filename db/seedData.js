@@ -7,8 +7,18 @@ const {
 } = require('./users');
 
 const {
-    createActivity
+    createActivity,
+    getAllActivities
 } = require('./activities')
+
+const {
+  createRoutine,
+  getRoutinesWithoutActivities
+} = require('./routines')
+
+const {
+  addActivityToRoutine
+} = require('./routine_activities')
 
 async function dropTables() {
     try {
@@ -235,22 +245,8 @@ async function createInitialUsers() {
     }
   }
 
-
-async function testDB(){
-    try {
-        console.log("Starting to test database...")
-        console.log("Calling username...")
-        const users = await getUser();
-        console.log("Result:", users)
-    } catch (error) {
-        throw error
-    }
-}
-
-
 module.exports = {
     rebuildDB,
-    testDB,
     dropTables,
     createTables,
   }
