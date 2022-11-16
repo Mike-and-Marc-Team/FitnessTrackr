@@ -7,7 +7,9 @@ const {
     createRoutine,
     getAllRoutines,
     updateRoutine,
-    getRoutineById
+    destroyRoutine,
+    getRoutineById,
+    addActivities
 } = require('../db');
 
 routineRouter.use((req, res, next) =>{
@@ -109,7 +111,7 @@ routineRouter.delete('/:routineId', requireUser, async (req, res, next) => {
         const routine = await getRoutineById(req.params.routineId);
 
         if (routine && routine.author.id === req.user.id) {
-            const updatedRoutine = await updateRoutine(routine.id, { active: false });
+            const updatedRoutine = await destroyRoutine(routine.id, { active: false });
 
             res.send({ post: updatedRoutine});
         } else {
@@ -126,6 +128,25 @@ routineRouter.delete('/:routineId', requireUser, async (req, res, next) => {
     }
 });
 
+routineRouter.post('/:routineId/activities', requireUser, async (req, res, next) => {
+    const { title, content, activities = "" } = req.body;
 
+    const activitiesArr = activities.trim().split(/\s+/)
+    const activityData = {};
+
+    if (activitiesArr.length) {
+        activityData.activities = activitiesArr;
+    }
+
+    try {
+        const activity = await addActivities(req.params.routineId)
+
+
+    } catch (error) {
+        
+
+
+    }
+})
 
 module.exports = routineRouter;
