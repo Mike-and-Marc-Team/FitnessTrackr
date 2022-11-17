@@ -37,6 +37,7 @@ usersRouter.post("/login", async (req, res, next) => {
       const newToken = jwt.sign(
         {
           username: username,
+          id: user.id
         },
         JWT_SECRET,
         {
@@ -96,3 +97,7 @@ usersRouter.post("/register", async (req, res, next) => {
 });
 
 module.exports = usersRouter;
+
+
+
+// if(req.user)
