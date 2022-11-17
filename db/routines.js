@@ -42,13 +42,40 @@ async function getRoutinesWithoutActivities() {
     }
 }
 
+async function attachActivitiesToRoutines(routines) {
+    const idString = routines.map((el, ind) => {
+        return `$${ind + 1}`
+    }) .join(", ")
+    const idArr = routines.map((el) => {
+        return el.id
+    })
+    try {
+        const { rows: activities } = await client.query(`
+        SELECT activities.*, routineactivities.duration, routineactivities.count, routineactivities.id AS "routineActivityId", routineactivities."routineId"
+        FROM activities
+        JOIN routineactivities ON routineactivities."activityId"=activities.id
+        WHERE routineactivities."routineId" IN (${idString});
+        `, idArr)
+        for (const routine of routines) {
+            const activitiesToAdd = activities.filter((activity) => {
+                return activity.routineId == routine.id
+            }
+            )
+            routine.activities = activitiesToAdd
+        }   return routines
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 async function getAllRoutines() {
     try {
         const { rows } = await client.query(`
-        SELECT *
-        FROM routines;
+        SELECT routines.*, users.username AS "creatorName" 
+        FROM routines
+        JOIN users ON routines."creatorId"=users.id;
         `);
-        return rows
+        return attachActivitiesToRoutines(rows)
     } catch (error) {
         console.log(error)
     }

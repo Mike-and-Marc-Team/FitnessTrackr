@@ -13,7 +13,8 @@ const {
 
 const {
   createRoutine,
-  getRoutinesWithoutActivities
+  getRoutinesWithoutActivities,
+  getAllRoutines
 } = require('./routines')
 
 const {
@@ -245,8 +246,15 @@ async function createInitialUsers() {
     }
   }
 
+  async function testDB(){
+    console.log("testing getAllroutines")
+    const routines = await getAllRoutines()
+    console.log(routines[0].activities)
+  }
+
 module.exports = {
     rebuildDB,
+    testDB,
     dropTables,
-    createTables,
+    createTables
   }

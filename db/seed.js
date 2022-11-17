@@ -1,4 +1,4 @@
-const client = require('./index');
+const { client } = require('./index');
 const { rebuildDB } = require('./seedData');
 const { testDB } = require('./seedData')
 rebuildDB()
