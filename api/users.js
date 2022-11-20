@@ -20,7 +20,7 @@ usersRouter.get("/", async (req, res) => {
   });
 });
 
-usersRouter.post("/login", async (req, res, next) => {
+usersRouter.post("/api/users/login", async (req, res, next) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -58,7 +58,7 @@ usersRouter.post("/login", async (req, res, next) => {
   }
 });
 
-usersRouter.post("/register", async (req, res, next) => {
+usersRouter.post("/api/users/register", async (req, res, next) => {
   const { username, password } = req.body;
 
   try {
@@ -95,6 +95,49 @@ usersRouter.post("/register", async (req, res, next) => {
     next({ name, message });
   }
 });
+
+
+usersRouter.get('/api/users/me', async (req, res, next) => {
+  try {
+    if (!req.user) {
+      next({
+        name: "InvalidUserError",
+        message: "You must be logged in to view your profile"
+      })
+    } else {
+      const user = getUserByUsername(req.user.username);
+      res.send({
+        user
+      })
+    }
+  } catch ({ name, message }) {
+    next({ name, message })
+  }
+});
+
+
+
+usersRouter.get('/api/users/:username/routines', async (req, res, next) => {
+  const user = getUserByUsername();
+
+  try {
+    if (!req.user) {
+      next({
+        name: "InvalidUserError",
+        message: "You must be logged in to view your profile"
+      })
+    } else {
+      res.send({
+        user
+      })
+    }
+  } catch ({ name, message }) {
+    next({ name, message })
+  }
+})
+
+
+
 
 module.exports = usersRouter;
 

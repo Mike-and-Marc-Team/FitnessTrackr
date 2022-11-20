@@ -8,7 +8,7 @@ const {
     deleteActivity
 } = require('../db');
 
-routineActivitiesRouter.patch('/routine_activities/:routineActivityId', requireUser, async (req, res, next) => {
+routineActivitiesRouter.patch('/api/routine_activities/:routineActivityId', requireUser, async (req, res, next) => {
     const { activityId } = req.params;
     const { title, content, activities } = req.body;
 
@@ -27,7 +27,7 @@ routineActivitiesRouter.patch('/routine_activities/:routineActivityId', requireU
     try {
         const originalRoutine = await getRoutineById(activityId);
 
-        if (originalRoutine.author.id === req.user.id) {
+        if (originalRoutine.creatorName.id === req.user.id) {
             const updatedRoutine = await updateActivity(activityId, updateFields);
             res.send({ post: updatedRoutine })
         } else {
@@ -41,11 +41,11 @@ routineActivitiesRouter.patch('/routine_activities/:routineActivityId', requireU
     }
 });
 
-routineActivitiesRouter.delete('/routine_activities/:routineActivityId', requireUser, async (req, res, next) => {
+routineActivitiesRouter.delete('/api/routine_activities/:routineActivityId', requireUser, async (req, res, next) => {
     try {
         const activity = await getRoutineById(req.params.routineActivityId);
 
-        if (activity && routine.author.id === req.user.id) {
+        if (activity && routine.creatorName.id === req.user.id) {
             const updatedActivity = await deleteActivity(routine.id, { active: false });
 
             res.send({ post: updatedActivity});

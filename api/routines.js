@@ -20,7 +20,7 @@ routineRouter.use((req, res, next) =>{
 });
 
 
-routineRouter.get("/", async (req, res) => {
+routineRouter.get("/api/routines", async (req, res) => {
     try {
         const allRoutines = await getAllRoutines();
 
@@ -28,7 +28,7 @@ routineRouter.get("/", async (req, res) => {
             if (routine.active) {
                 return true;
             }
-            if (req.user && routine.author.id === req.user.id) {
+            if (req.user && routine.creatorName.id === req.user.id) {
                 return true;
             }
             return false;
@@ -43,7 +43,7 @@ routineRouter.get("/", async (req, res) => {
     }
 });
 
-routineRouter.post("/", requireUser, async (req, res, next) =>{
+routineRouter.post("/api/routines", requireUser, async (req, res, next) =>{
     const { title, content, activities = "" } = req.body;
 
     const activityArr = activities.trim().split(/\s+/)
@@ -73,7 +73,7 @@ routineRouter.post("/", requireUser, async (req, res, next) =>{
     }
 });
 
-routineRouter.patch('/:routineId', requireUser, async (req, res, next) => {
+routineRouter.patch('/api/routines/:routineId', requireUser, async (req, res, next) => {
     const { routineId } = req.params;
     const { title, content, activities } = req.body;
 
@@ -92,7 +92,7 @@ routineRouter.patch('/:routineId', requireUser, async (req, res, next) => {
     try {
         const originalRoutine = await getRoutineById(routineId);
 
-        if (originalRoutine.author.id === req.user.id) {
+        if (originalRoutine.creatorName.id === req.user.id) {
             const updatedRoutine = await updateRoutine(routineId, updateFields);
             res.send({ post: updatedRoutine })
         } else {
@@ -106,11 +106,11 @@ routineRouter.patch('/:routineId', requireUser, async (req, res, next) => {
     }
 });
 
-routineRouter.delete('/:routineId', requireUser, async (req, res, next) => {
+routineRouter.delete('/api/routines/:routineId', requireUser, async (req, res, next) => {
     try {
         const routine = await getRoutineById(req.params.routineId);
 
-        if (routine && routine.author.id === req.user.id) {
+        if (routine && routine.creatorName.id === req.user.id) {
             const updatedRoutine = await destroyRoutine(routine.id, { active: false });
 
             res.send({ post: updatedRoutine});
@@ -128,7 +128,7 @@ routineRouter.delete('/:routineId', requireUser, async (req, res, next) => {
     }
 });
 
-routineRouter.post('/:routineId/activities', requireUser, async (req, res, next) => {
+routineRouter.post('/api/routines/:routineId/activities', requireUser, async (req, res, next) => {
     const { title, content, activities = "" } = req.body;
 
     const activitiesArr = activities.trim().split(/\s+/)
