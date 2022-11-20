@@ -87,6 +87,7 @@ async function getAllPublicRoutines() {
         SELECT *
         FROM routines
         JOIN users ON routines."creatorId"=users.id
+        WHERE "isPublic"=true;
         `)
     } catch (error) {
         console.log(error)
@@ -95,17 +96,15 @@ async function getAllPublicRoutines() {
 
 async function getAllRoutinesByUser({ username }) {
     try {
-        const { rows: [routineIds] } = await client.query(`
-        SELECT *
+        const { rows } = await client.query(`
+        SELECT routines.*, users.username AS "creatorName"
         FROM routines
-        WHERE "creatorId"=${username} 
-        `);
+        JOIN users ON routines."creatorId"=users.Id
+        WHERE "username"=$1; 
+        `, [username]
+        );
 
-        const routines = await Promise.all(routineIds.map(
-            routine => getRoutineById( routine.id)
-        ));
-
-        return routines
+        return (rows);
 
     } catch (error) {
         console.log(error)
@@ -115,9 +114,10 @@ async function getAllRoutinesByUser({ username }) {
 async function getPublicRoutinesByUser({ username }) {
     try {
         const { rows } = await client.query(`
-        SELECT *
+        SELECT routines.*, users.username AS "creatorName"
         FROM routines
-        WHERE "isPublic"=true
+        JOIN users ON routines."creatorId"=users.Id
+        WHERE "isPublic"=true AND username=$1;
         `, [username]);
         return rows;
     } catch (error) {

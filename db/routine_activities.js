@@ -49,8 +49,35 @@ async function getRoutineActivitiesByRoutine({id}) {
   }
 }
 
-async function updateRoutineActivity ({id, ...fields}) {
-}
+async function updateRoutineActivity (id, fields = {}) {
+    const setString = Object.keys(fields)
+      .map((key, index) => `"${key}"=$${index + 1}`)
+      .join(", ");
+  
+    if (setString.length === 0) {
+      return;
+    }
+  
+    try {
+      const {
+        rows: [routine],
+      } = await client.query(
+        `
+        UPDATE routines
+        SET ${setString}
+        WHERE id=${id}
+        RETURNING *;
+      `,
+        Object.values(fields)
+      );
+  
+      return routine;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
 
 async function destroyRoutineActivity(id) {
   await client.query(`
@@ -70,7 +97,7 @@ async function canEditRoutineActivity(routineActivityId, userId) {
     FROM routineactivities
     JOIN routines ON routineactivities."routineId"=routines.id AND routineactivities.id=${routineActivityId}; 
     `)
-    return routine
+    return routine.creatorId == userId
   } catch (error) {
     console.log(error)
   }
