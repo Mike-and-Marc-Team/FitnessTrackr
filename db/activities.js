@@ -64,7 +64,7 @@ async function getActivityByName(name) {
 async function attachActivitiesToRoutines(creatorId, routines) {
   try {
     const createActivityRoutinePromises = routines.map(
-      routine => createRoutine(creatorId, routine.id)
+      routine => createRoutine(routines)
     );
 
     await Promise.all(createActivityRoutinePromises);

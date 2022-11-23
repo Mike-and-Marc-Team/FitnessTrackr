@@ -1,4 +1,4 @@
-const express = requre('express');
+const express = require('express');
 const activityRouter = express.Router();
 
 const {requireUser } = require('./utilities')
