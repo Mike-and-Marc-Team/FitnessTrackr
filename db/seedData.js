@@ -164,6 +164,9 @@ async function createInitialUsers() {
     console.log("starting to create routine_activities...")
     const [bicepRoutine, chestRoutine, legRoutine, cardioRoutine] =
       await getRoutinesWithoutActivities()
+    const routineActivityData = await getRoutinesWithoutActivities()
+      console.log("TEST:", bicepRoutine, chestRoutine)
+      console.log("TEST:", routineActivityData)
     const [bicep1, bicep2, chest1, chest2, leg1, leg2, leg3] =
       await getAllActivities()
   
@@ -224,7 +227,7 @@ async function createInitialUsers() {
       },
     ]
     const routineActivities = await Promise.all(
-      routineActivitiesToCreate.map(addActivityToRoutine)
+      routineActivitiesToCreate.map( await addActivityToRoutine)
     )
     console.log("routine_activities created: ", routineActivities)
     console.log("Finished creating routine_activities!")

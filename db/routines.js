@@ -31,7 +31,7 @@ async function getRoutinesWithoutActivities() {
     try {
         const { rows } = await client.query(`
         SELECT *
-        FROM routines
+        FROM routines;
         `)
         if (!rows) {
             return null;
